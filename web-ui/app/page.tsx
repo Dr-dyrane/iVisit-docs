@@ -232,7 +232,7 @@ export default function Home() {
                 position: relative;
                 max-width: 8.5in;
                 margin: 0 auto;
-                padding: 1in;
+                padding: 0.4in;
                 background: white;
               }
 
@@ -256,23 +256,23 @@ export default function Home() {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
-                margin-bottom: 60px;
-                padding-bottom: 30px;
+                margin-bottom: 40px;
+                padding-bottom: 20px;
                 border-bottom: 2px solid #f0f0f0;
               }
 
               .brand-intel { display: flex; align-items: center; gap: 20px; }
-              .brand-logo { width: 60px; height: 60px; object-fit: contain; }
-              .brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: #000; letter-spacing: -1.5px; }
+              .brand-logo { width: 50px; height: 50px; object-fit: contain; }
+              .brand-name { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #000; letter-spacing: -1.5px; }
 
               .classification {
                 text-align: right;
               }
-              .class-label { font-size: 10px; font-weight: 900; color: #86100E; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; }
-              .class-date { font-size: 14px; font-weight: 600; color: #666; }
+              .class-label { font-size: 9px; font-weight: 900; color: #86100E; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 3px; }
+              .class-date { font-size: 12px; font-weight: 600; color: #666; }
 
               .intel-body { color: #222; }
-              h1 { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; margin: 0 0 30px 0; letter-spacing: -2px; line-height: 1; color: #000; }
+              h1 { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; margin: 0 0 20px 0; letter-spacing: -2px; line-height: 1; color: #000; }
               h2 { 
                 font-family: 'Space Grotesk', sans-serif; 
                 font-size: 24px; 
@@ -319,7 +319,7 @@ export default function Home() {
 
               @media print {
                 @page { size: portrait; margin: 0; }
-                .dossier { padding: 0.75in 1in; }
+                .dossier { padding: 0.4in; }
                 h2:first-of-type { break-before: auto; }
               }
             </style>
