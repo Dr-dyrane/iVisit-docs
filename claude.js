@@ -36,7 +36,7 @@ Guidelines:
 
       // Prepare user message with chunks
       let userMessage = `USER REQUEST: ${prompt}\n\n`;
-      
+
       if (chunks.length > 0) {
         userMessage += `RELEVANT CODEBASE CONTEXT:\n\n`;
         chunks.forEach((chunk, index) => {
@@ -72,17 +72,24 @@ Guidelines:
       }
 
       const data = await response.json();
-      const content = data.content[0].text;
-      
+      let rawContent = data.content[0].text;
+
+      // Remove markdown code blocks if present
+      let cleanedContent = rawContent;
+      const jsonBlockMatch = rawContent.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (jsonBlockMatch) {
+        cleanedContent = jsonBlockMatch[1];
+      }
+
       // Parse JSON response
       let document;
       try {
-        document = JSON.parse(content);
+        document = JSON.parse(cleanedContent);
       } catch (parseError) {
         // Fallback if JSON parsing fails
         document = {
           title: this.extractTitle(prompt),
-          content: content
+          content: rawContent
         };
       }
 
@@ -101,14 +108,14 @@ Guidelines:
    */
   extractTitle(prompt) {
     const lowerPrompt = prompt.toLowerCase();
-    
+
     if (lowerPrompt.includes('business proposal')) return 'Business Proposal';
     if (lowerPrompt.includes('privacy policy')) return 'Privacy Policy';
     if (lowerPrompt.includes('prd') || lowerPrompt.includes('product requirement')) return 'Product Requirements Document';
     if (lowerPrompt.includes('technical')) return 'Technical Documentation';
     if (lowerPrompt.includes('legal')) return 'Legal Document';
     if (lowerPrompt.includes('api')) return 'API Documentation';
-    
+
     // Default title
     return 'Generated Document';
   }

@@ -131,19 +131,37 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem('recentDocuments');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setRecentDocs(parsed);
-      if (parsed.length > 0) {
-        setCurrentDoc(parsed[0]);
+    const fetchDocs = async () => {
+      try {
+        const response = await fetch('/api/documents');
+        const data = await response.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setRecentDocs(data);
+          setCurrentDoc(data[0]);
+          return;
+        }
+      } catch (e) {
+        console.error("Failed to sync documents", e);
+      }
+
+      // Fallback to localStorage or Mock
+      const saved = localStorage.getItem('recentDocuments');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setRecentDocs(parsed);
+        if (parsed.length > 0) {
+          setCurrentDoc(parsed[0]);
+        } else {
+          setCurrentDoc(MOCK_DOCUMENT);
+        }
       } else {
+        setRecentDocs([MOCK_DOCUMENT]);
         setCurrentDoc(MOCK_DOCUMENT);
       }
-    } else {
-      setRecentDocs([MOCK_DOCUMENT]);
-      setCurrentDoc(MOCK_DOCUMENT);
-    }
+    };
+
+    fetchDocs();
   }, []);
 
   const generateDocument = async () => {
@@ -174,36 +192,62 @@ export default function Home() {
         })
       });
 
-      const result = await response.json();
+      if (!response.body) throw new Error("No response body");
 
-      if (result.success) {
-        setLogs(prev => [...prev, `✅ Document generated successfully!`]);
-        if (result.document.logs) {
-          const cliLogs = result.document.logs.split('\n').filter((l: string) => l.trim() !== '');
-          setLogs(prev => [...prev, ...cliLogs]);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const data = JSON.parse(line);
+
+            if (data.status === 'log') {
+              setLogs(prev => [...prev, data.message]);
+            } else if (data.status === 'info') {
+              setLogs(prev => [...prev, `ℹ️ ${data.message}`]);
+            } else if (data.status === 'error') {
+              setLogs(prev => [...prev, `⚠️ ${data.message}`]);
+            } else if (data.status === 'success') {
+              setLogs(prev => [...prev, `✅ Generation Complete!`]);
+
+              const newDoc = {
+                ...data.document,
+                type: docType,
+                id: Date.now(),
+                timestamp: new Date().toISOString()
+              };
+
+              setCurrentDoc(newDoc);
+              setRecentDocs(prev => {
+                const updated = [newDoc, ...prev.filter(d => d.id !== 'mock-1').slice(0, 4)];
+                localStorage.setItem('recentDocuments', JSON.stringify(updated));
+                return updated;
+              });
+
+              toast.success("Document Generated", {
+                description: `${docType} created successfully`,
+              });
+              setShowPreview(true);
+            } else if (data.status === 'failed') {
+              setLogs(prev => [...prev, `❌ Failed: ${data.error}`]);
+              toast.error("Generation Failed", {
+                description: data.error || "Unknown error occurred",
+              });
+            }
+          } catch (e) {
+            console.error("Parse error", e);
+          }
         }
-
-        toast.success("Document Generated", {
-          description: `${docType} created successfully`,
-        });
-
-        const newDoc = {
-          ...result.document,
-          type: docType,
-          id: Date.now(),
-          timestamp: new Date().toISOString()
-        };
-
-        setCurrentDoc(newDoc);
-        const updated = [newDoc, ...recentDocs.filter(d => d.id !== 'mock-1').slice(0, 4)];
-        setRecentDocs(updated);
-        localStorage.setItem('recentDocuments', JSON.stringify(updated));
-        setShowPreview(true);
-      } else {
-        setLogs(prev => [...prev, `❌ Generation Failed: ${result.error}`]);
-        toast.error("Generation Failed", {
-          description: result.error || "Unknown error occurred",
-        });
       }
     } catch (error: any) {
       console.error('Generation Error:', error);

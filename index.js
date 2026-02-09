@@ -51,7 +51,7 @@ class iVisitDocGenerator {
   constructor() {
     this.claude = new ClaudeAPI(process.env.ANTHROPIC_API_KEY, CONFIG.maxTokens);
     this.supabase = null;
-    
+
     // Initialize Supabase if credentials are provided
     if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
       this.supabase = new SupabaseMemory(
@@ -131,7 +131,7 @@ class iVisitDocGenerator {
     }
 
     console.log('📁 Indexing all iVisit projects into Supabase memory...');
-    
+
     // Initialize Supabase table
     await this.supabase.initializeTable();
 
@@ -139,7 +139,7 @@ class iVisitDocGenerator {
 
     for (const projectPath of CONFIG.siblingProjects) {
       const fullPath = path.resolve(__dirname, projectPath);
-      
+
       if (!await fs.pathExists(fullPath)) {
         console.log(`⚠️  Project not found: ${projectPath}`);
         continue;
@@ -147,7 +147,7 @@ class iVisitDocGenerator {
 
       console.log(`📖 Reading: ${projectPath}`);
       const chunks = await this.readProjectFiles(fullPath);
-      
+
       if (chunks.length > 0) {
         const stored = await this.supabase.storeChunks(chunks);
         totalChunks += stored;
@@ -164,11 +164,11 @@ class iVisitDocGenerator {
     if (this.supabase) {
       // Try to get relevant chunks from Supabase
       const relevantChunks = await this.supabase.getRelevantChunks(prompt, 20);
-      
+
       if (relevantChunks.length > 0) {
         return relevantChunks;
       }
-      
+
       // Fallback to recent chunks
       console.log('📋 No specific matches found, using recent chunks...');
       return await this.supabase.getAllChunks(15);
@@ -177,10 +177,10 @@ class iVisitDocGenerator {
     // If no Supabase, read files directly
     console.log('📋 Reading files directly (no Supabase memory)...');
     const allChunks = [];
-    
+
     for (const projectPath of CONFIG.siblingProjects) {
       const fullPath = path.resolve(__dirname, projectPath);
-      
+
       if (await fs.pathExists(fullPath)) {
         const chunks = await this.readProjectFiles(fullPath);
         allChunks.push(...chunks.slice(0, 5)); // Limit per project
@@ -201,7 +201,7 @@ class iVisitDocGenerator {
       try {
         const content = await fs.readFile(filePath, 'utf8');
         const relativePath = path.relative(projectPath, filePath);
-        
+
         // Skip if file hasn't changed (when using Supabase)
         if (this.supabase) {
           const hasChanged = await this.supabase.hasFileChanged(relativePath, content);
@@ -239,28 +239,28 @@ class iVisitDocGenerator {
    */
   async getAllFiles(dirPath) {
     const files = [];
-    
+
     try {
       const entries = await fs.readdir(dirPath, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dirPath, entry.name);
-        
+
         if (entry.isDirectory()) {
           // Skip excluded directories
           if (CONFIG.excludeDirs.includes(entry.name)) {
             continue;
           }
-          
+
           // Recursively read subdirectories
           const subFiles = await this.getAllFiles(fullPath);
           files.push(...subFiles);
         } else {
           // Skip excluded files
-          const shouldExclude = CONFIG.excludeFiles.some(ext => 
+          const shouldExclude = CONFIG.excludeFiles.some(ext =>
             entry.name.endsWith(ext)
           );
-          
+
           if (!shouldExclude) {
             files.push(fullPath);
           }
@@ -269,7 +269,7 @@ class iVisitDocGenerator {
     } catch (error) {
       console.warn(`⚠️  Could not read directory ${dirPath}: ${error.message}`);
     }
-    
+
     return files;
   }
 
@@ -283,10 +283,23 @@ class iVisitDocGenerator {
     // Generate filename
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const baseName = document.title.replace(/[^a-zA-Z0-9]/g, '_');
-    
+
     // Save as Markdown
     const mdPath = path.join(CONFIG.outputDir, `${baseName}_${timestamp}.md`);
-    await fs.writeFile(mdPath, document.content, 'utf8');
+
+    // If the document content is still JSON-encoded (Claude fallback), try to parse it
+    let finalContent = document.content;
+    try {
+      // Check if content is a JSON-like string
+      if (typeof finalContent === 'string' && finalContent.trim().startsWith('{')) {
+        const parsed = JSON.parse(finalContent);
+        if (parsed.content) finalContent = parsed.content;
+      }
+    } catch (e) {
+      // Not JSON or already clean
+    }
+
+    await fs.writeFile(mdPath, finalContent, 'utf8');
     console.log(`📄 Markdown saved: ${mdPath}`);
 
     // Save as enhanced DOCX
@@ -301,7 +314,7 @@ class iVisitDocGenerator {
 // CLI execution
 if (process.argv[1] && process.argv[1].endsWith('index.js')) {
   const prompt = process.argv[2];
-  
+
   if (!prompt) {
     console.log('Usage: node index.js "Your prompt here"');
     console.log('');

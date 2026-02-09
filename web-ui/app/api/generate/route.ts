@@ -1,122 +1,150 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
-  try {
-    const { prompt, useSupabase } = await request.json();
+  const { prompt, useSupabase } = await request.json();
 
-    if (!prompt) {
-      return NextResponse.json(
-        { error: 'Prompt is required' },
-        { status: 400 }
-      );
-    }
-
-    console.log(`🚀 Next.js API Request: ${prompt.substring(0, 50)}...`);
-    console.log(`📡 Using Supabase Memory: ${useSupabase}`);
-
-    // Call the main CLI generator
-    // We assume index.js is in the parent directory.
-    // However, if we want to be more self-contained or robust, we should ensure the path is correct.
-    // The user mentioned "because we are not going ../", implying we might need to run things differently
-    // or that the environment variables need to be present in the current directory (which we just fixed).
-
-    // BUT, the CLI script `index.js` IS still in the parent directory (`../index.js`).
-    // If we want to run it, we must reference it there.
-    // Unless the user wants to MOVE the CLI logic into the Next.js app?
-    // The user said "move env file here if you ahve to and otehr things".
-    // This suggests we should try to make the Web UI more independent or at least have its own config.
-
-    // For now, we will keep calling `../index.js` but ensure we pass the correct ENV variables
-    // that we just copied into the `web-ui` folder.
-
-    const args = [path.join(process.cwd(), '..', 'index.js'), prompt];
-
-    const env = { ...process.env };
-
-    // Ensure we have the API keys from our local .env (Next.js loads them automatically into process.env)
-    if (!env.ANTHROPIC_API_KEY) {
-      console.warn("⚠️ ANTHROPIC_API_KEY is missing in Next.js process.env");
-    }
-
-    if (!useSupabase) {
-      delete env.SUPABASE_URL;
-      delete env.SUPABASE_SERVICE_ROLE_KEY;
-    }
-
-    const generatorProcess = spawn('node', args, {
-      stdio: 'pipe',
-      env: env
+  if (!prompt) {
+    return new Response(JSON.stringify({ error: 'Prompt is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
     });
+  }
 
-    const output = await new Promise<string>((resolve, reject) => {
-      let output = '';
+  // Create a ReadableStream for Server-Sent Events or just raw streaming
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (data: any) => {
+        controller.enqueue(encoder.encode(JSON.stringify(data) + '\n'));
+      };
+
+      send({ status: 'info', message: '🚀 Starting CLI Generator...' });
+
+      const args = [path.join(process.cwd(), '..', 'index.js'), prompt];
+      const env = { ...process.env };
+
+      if (!useSupabase) {
+        delete env.SUPABASE_URL;
+        delete env.SUPABASE_SERVICE_ROLE_KEY;
+      }
+
+      const generatorProcess = spawn('node', args, {
+        stdio: 'pipe',
+        env: env,
+      });
+
+      let fullOutput = '';
       let errorOutput = '';
 
       generatorProcess.stdout.on('data', (data) => {
         const chunk = data.toString();
-        output += chunk;
-        console.log(`[CLI stdout]: ${chunk.trim()}`);
+        fullOutput += chunk;
+        // Send each line as a log
+        const lines = chunk.split('\n');
+        lines.forEach((line: string) => {
+          if (line.trim()) {
+            send({ status: 'log', message: line.trim() });
+          }
+        });
       });
 
       generatorProcess.stderr.on('data', (data) => {
         const chunk = data.toString();
         errorOutput += chunk;
-        console.error(`[CLI stderr]: ${chunk.trim()}`);
+        send({ status: 'error', message: chunk.trim() });
       });
 
       generatorProcess.on('close', (code) => {
-        console.log(`[CLI] Process exited with code ${code}`);
         if (code === 0) {
-          resolve(output);
+          // Final document extraction
+          const titleMatch = fullOutput.match(/✅ Generated: "(.+?)"/);
+          let title = titleMatch ? titleMatch[1] : `Generated Document`;
+
+          const mdPathMatch = fullOutput.match(/📄 Markdown saved: (.+)/);
+          let content = fullOutput;
+
+          if (mdPathMatch && mdPathMatch[1]) {
+            try {
+              let filePath = mdPathMatch[1].trim();
+              if (!path.isAbsolute(filePath)) {
+                filePath = path.join(process.cwd(), filePath);
+              }
+              if (fs.existsSync(filePath)) {
+                let raw = fs.readFileSync(filePath, 'utf8');
+                // Deep Clean: extract from JSON if needed
+                const jsonMatch = raw.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/) ||
+                  raw.match(/^\s*(\{[\s\S]*\})\s*$/);
+                if (jsonMatch) {
+                  try {
+                    const parsed = JSON.parse(jsonMatch[1]);
+                    if (parsed.content) raw = parsed.content;
+                    if (parsed.title) title = parsed.title;
+                  } catch (e) { }
+                }
+                content = raw;
+              } else {
+                // Try parent docs
+                const parentPath = path.join(process.cwd(), '..', mdPathMatch[1].trim());
+                if (fs.existsSync(parentPath)) {
+                  let raw = fs.readFileSync(parentPath, 'utf8');
+                  const jsonMatch = raw.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+                  if (jsonMatch) {
+                    try {
+                      const parsed = JSON.parse(jsonMatch[1]);
+                      if (parsed.content) raw = parsed.content;
+                    } catch (e) { }
+                  }
+                  content = raw;
+                }
+              }
+            } catch (e) {
+              send({ status: 'error', message: 'Failed to read file' });
+            }
+          }
+
+          send({
+            status: 'success',
+            document: {
+              title,
+              content,
+              timestamp: new Date().toISOString(),
+              type: 'Generated'
+            }
+          });
+          controller.close();
         } else {
-          reject(new Error(errorOutput || `Process exited with code ${code}`));
+          send({ status: 'failed', error: errorOutput || 'Process exited with error' });
+          controller.close();
         }
       });
-    });
 
-    // Attempt to extract title from logs
-    const titleMatch = output.match(/✅ Generated: "(.+?)"/);
-    const title = titleMatch ? titleMatch[1] : `Generated Document - ${new Date().toLocaleDateString()}`;
+      // Handle process errors
+      generatorProcess.on('error', (err) => {
+        send({ status: 'failed', error: err.message });
+        controller.close();
+      });
 
-    // Attempt to extract file path
-    const mdPathMatch = output.match(/📄 Markdown saved: (.+)/);
-
-    let content = output;
-    if (mdPathMatch && mdPathMatch[1]) {
-      try {
-        // The path returned by CLI might be relative to the CLI's CWD (parent dir)
-        // or absolute. Let's handle both.
-        let filePath = mdPathMatch[1].trim();
-
-        if (!path.isAbsolute(filePath)) {
-          // If relative, it's relative to the parent directory where index.js ran
-          filePath = path.join(process.cwd(), '..', filePath);
+      // Timeout safety (5 minutes)
+      setTimeout(() => {
+        if (generatorProcess.exitCode === null) {
+          generatorProcess.kill();
+          send({ status: 'failed', error: 'Generation timed out' });
+          controller.close();
         }
+      }, 300000);
+    },
+  });
 
-        if (fs.existsSync(filePath)) {
-          content = fs.readFileSync(filePath, 'utf8');
-        }
-      } catch (e) {
-        console.error('Failed to read generated file:', e);
-      }
-    }
-
-    const document = {
-      title: title,
-      content: content,
-      logs: output,
-      timestamp: new Date().toISOString()
-    };
-
-    return NextResponse.json({ success: true, document });
-  } catch (error: any) {
-    console.error('❌ API Error:', error);
-    return NextResponse.json(
-      { error: error.message || 'Unknown error' },
-      { status: 500 }
-    );
-  }
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'application/x-ndjson',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
 }
