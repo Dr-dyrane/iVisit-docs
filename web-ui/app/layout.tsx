@@ -23,6 +23,15 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'iVisit Document Generator',
   description: 'Professional document generation with AI precision and Apple-level design',
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.png',
+  },
+  openGraph: {
+    title: 'iVisit Document Generator',
+    description: 'AI-Powered Professional Document Generation',
+    images: ['/logo.png'],
+  },
 };
 
 import { Toaster } from 'sonner';
