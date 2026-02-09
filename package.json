@@ -1,0 +1,34 @@
+{
+  "name": "ivisit-doc",
+  "version": "1.0.0",
+  "description": "Generate business, legal, and technical documents automatically from iVisit codebases",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js \"Generate a test document\"",
+    "web": "cd web-ui && npm run dev",
+    "web:build": "cd web-ui && npm run build",
+    "web:start": "cd web-ui && npm run start"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "docx": "^8.5.0",
+    "dotenv": "^16.4.5",
+    "fs-extra": "^11.2.0",
+    "marked": "^12.0.2",
+    "node-fetch": "^3.3.2",
+    "path": "^0.12.7",
+    "readline": "^1.3.0"
+  },
+  "keywords": [
+    "documentation",
+    "claude",
+    "api",
+    "business",
+    "legal",
+    "technical"
+  ],
+  "author": "iVisit Team",
+  "license": "MIT"
+}

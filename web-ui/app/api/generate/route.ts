@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import path from 'path';
+import fs from 'fs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,28 +22,28 @@ export async function POST(request: NextRequest) {
     // However, if we want to be more self-contained or robust, we should ensure the path is correct.
     // The user mentioned "because we are not going ../", implying we might need to run things differently
     // or that the environment variables need to be present in the current directory (which we just fixed).
-    
+
     // BUT, the CLI script `index.js` IS still in the parent directory (`../index.js`).
     // If we want to run it, we must reference it there.
     // Unless the user wants to MOVE the CLI logic into the Next.js app?
     // The user said "move env file here if you ahve to and otehr things".
     // This suggests we should try to make the Web UI more independent or at least have its own config.
-    
+
     // For now, we will keep calling `../index.js` but ensure we pass the correct ENV variables
     // that we just copied into the `web-ui` folder.
-    
+
     const args = [path.join(process.cwd(), '..', 'index.js'), prompt];
-    
+
     const env = { ...process.env };
-    
+
     // Ensure we have the API keys from our local .env (Next.js loads them automatically into process.env)
     if (!env.ANTHROPIC_API_KEY) {
-        console.warn("⚠️ ANTHROPIC_API_KEY is missing in Next.js process.env");
+      console.warn("⚠️ ANTHROPIC_API_KEY is missing in Next.js process.env");
     }
 
     if (!useSupabase) {
-        delete env.SUPABASE_URL;
-        delete env.SUPABASE_SERVICE_ROLE_KEY;
+      delete env.SUPABASE_URL;
+      delete env.SUPABASE_SERVICE_ROLE_KEY;
     }
 
     const generatorProcess = spawn('node', args, {
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
       env: env
     });
 
-    const output = await new Promise((resolve, reject) => {
+    const output = await new Promise<string>((resolve, reject) => {
       let output = '';
       let errorOutput = '';
 
@@ -82,26 +83,25 @@ export async function POST(request: NextRequest) {
 
     // Attempt to extract file path
     const mdPathMatch = output.match(/📄 Markdown saved: (.+)/);
-    
-    let content = output; 
+
+    let content = output;
     if (mdPathMatch && mdPathMatch[1]) {
-        try {
-            const fs = require('fs');
-            // The path returned by CLI might be relative to the CLI's CWD (parent dir)
-            // or absolute. Let's handle both.
-            let filePath = mdPathMatch[1].trim();
-            
-            if (!path.isAbsolute(filePath)) {
-                // If relative, it's relative to the parent directory where index.js ran
-                filePath = path.join(process.cwd(), '..', filePath);
-            }
-            
-            if (fs.existsSync(filePath)) {
-                content = fs.readFileSync(filePath, 'utf8');
-            }
-        } catch (e) {
-            console.error('Failed to read generated file:', e);
+      try {
+        // The path returned by CLI might be relative to the CLI's CWD (parent dir)
+        // or absolute. Let's handle both.
+        let filePath = mdPathMatch[1].trim();
+
+        if (!path.isAbsolute(filePath)) {
+          // If relative, it's relative to the parent directory where index.js ran
+          filePath = path.join(process.cwd(), '..', filePath);
         }
+
+        if (fs.existsSync(filePath)) {
+          content = fs.readFileSync(filePath, 'utf8');
+        }
+      } catch (e) {
+        console.error('Failed to read generated file:', e);
+      }
     }
 
     const document = {
