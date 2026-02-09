@@ -273,13 +273,28 @@ export default function Home() {
 
               .intel-body { color: #222; }
               h1 { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; margin: 0 0 30px 0; letter-spacing: -2px; line-height: 1; color: #000; }
-              h2 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; margin: 50px 0 20px 0; color: #000; border-left: 5px solid #86100E; padding-left: 20px; }
+              h2 { 
+                font-family: 'Space Grotesk', sans-serif; 
+                font-size: 24px; 
+                font-weight: 700; 
+                margin: 60px 0 30px 0; 
+                color: #000; 
+                border-left: 5px solid #86100E; 
+                padding-left: 20px;
+                break-before: page;
+                padding-top: 20px;
+              }
+              
+              p, li { break-inside: avoid; }
+              table, blockquote, pre { break-inside: avoid; margin: 40px 0; }
+              header, h1, h2, h3 { break-after: avoid; }
               
               p { margin-bottom: 20px; font-size: 16px; color: #333; }
               ul, ol { margin-bottom: 30px; padding-left: 25px; }
               li { margin-bottom: 12px; font-size: 16px; }
 
-              table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+              table { width: 100%; border-collapse: collapse; margin: 30px 0; page-break-inside: auto; }
+              tr { page-break-inside: avoid; page-break-after: auto; }
               th { background: #f8f8f8; color: #86100E; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 15px; text-align: left; border: 1px solid #eee; }
               td { padding: 15px; border: 1px solid #eee; font-size: 15px; }
 
@@ -297,6 +312,7 @@ export default function Home() {
                 text-transform: uppercase;
                 letter-spacing: 2px;
                 color: #999;
+                break-inside: avoid;
               }
               .auth-marker { display: flex; align-items: center; gap: 10px; color: #86100E; }
               .dot { width: 7px; height: 7px; background: #86100E; border-radius: 50%; }
@@ -304,6 +320,7 @@ export default function Home() {
               @media print {
                 @page { size: portrait; margin: 0; }
                 .dossier { padding: 0.75in 1in; }
+                h2:first-of-type { break-before: auto; }
               }
             </style>
           </head>
