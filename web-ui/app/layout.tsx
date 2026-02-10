@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { Toaster } from 'sonner';
+import { AuthProvider } from '@/hooks/useAuth';
+import { VaultShell } from '@/components/VaultShell';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,20 +24,18 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'iVisit Document Generator',
-  description: 'Professional document generation with AI precision and Apple-level design',
+  title: 'iVisit Data Room — Secure Intelligence Portal',
+  description: 'Access confidential business proposals, technical blueprints, and strategic documents from the iVisit Intelligence Collective.',
   icons: {
     icon: '/logo.svg',
     apple: '/logo.png',
   },
   openGraph: {
-    title: 'iVisit Document Generator',
-    description: 'AI-Powered Professional Document Generation',
+    title: 'iVisit Data Room',
+    description: 'Secure document portal for investors, partners, and developers.',
     images: ['/logo.png'],
   },
 };
-
-import { Toaster } from 'sonner';
 
 export default function RootLayout({
   children,
@@ -42,23 +43,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
-      <body className="min-h-screen bg-background text-foreground antialiased font-sans selection:bg-red-500/30">
-        <Toaster position="top-right" expand={true} richColors closeButton />
-        {children}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                  for(let registration of registrations) {
-                    registration.unregister();
-                  }
-                });
-              }
-            `,
-          }}
-        />
+    <html
+      lang="en"
+      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+    >
+      <body className="min-h-screen bg-black text-foreground antialiased font-sans">
+        <AuthProvider>
+          <Toaster
+            position="top-right"
+            expand={true}
+            richColors
+            closeButton
+            toastOptions={{
+              style: {
+                background: 'rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(12px)',
+                border: 'none',
+                color: '#f5f5f5',
+              },
+            }}
+          />
+          <VaultShell>
+            {children}
+          </VaultShell>
+        </AuthProvider>
       </body>
     </html>
   );

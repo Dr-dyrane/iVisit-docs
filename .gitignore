@@ -14,6 +14,7 @@ yarn-error.log*
 # Generated documents
 docs/
 !docs/.gitkeep
+!web-ui/app/docs/
 
 # Logs
 logs

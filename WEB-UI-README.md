@@ -13,7 +13,7 @@ A sophisticated Next.js interface for the iVisit Document Generator, featuring A
     *   Supabase memory toggle
     *   Local history of generated documents
 
-## �️ **Installation & Setup**
+## 🛠️ **Installation & Setup**
 
 The Web UI is located in the `web-ui` directory.
 
