@@ -448,10 +448,11 @@ function DocumentEditor({ doc, isNew, onSave, onCancel }: any) {
                             onChange={(e) => update('tier', e.target.value)}
                             className="w-full px-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] text-sm text-foreground
                          focus:outline-none focus:ring-1 focus:ring-foreground/10"
+                            style={{ colorScheme: 'dark' }}
                         >
-                            <option value="public">Public</option>
-                            <option value="confidential">Confidential</option>
-                            <option value="restricted">Restricted</option>
+                            <option value="public" className="bg-background text-foreground">Public</option>
+                            <option value="confidential" className="bg-background text-foreground">Confidential</option>
+                            <option value="restricted" className="bg-background text-foreground">Restricted</option>
                         </select>
                     </div>
                 </div>
@@ -522,10 +523,19 @@ function GenerateTab() {
 
     const DOC_TYPES = [
         { value: 'business_proposal', label: 'Business Proposal' },
-        { value: 'privacy_policy', label: 'Privacy Policy' },
+        { value: 'investor_deck', label: 'Investor Pitch Deck' },
+        { value: 'master_plan', label: 'Strategic Master Plan' },
+        { value: 'prd', label: 'Product Requirements (PRD)' },
         { value: 'technical_spec', label: 'Technical Specification' },
+        { value: 'api_documentation', label: 'API Documentation' },
+        { value: 'system_architecture', label: 'System Architecture' },
+        { value: 'privacy_policy', label: 'Privacy Policy' },
+        { value: 'terms_of_service', label: 'Terms of Service' },
         { value: 'legal_agreement', label: 'Legal Agreement' },
-        { value: 'master_plan', label: 'Master Plan' },
+        { value: 'nda', label: 'Non-Disclosure Agreement' },
+        { value: 'sla', label: 'Service Level Agreement' },
+        { value: 'compliance_report', label: 'Compliance Report' },
+        { value: 'user_guide', label: 'User Guide' },
         { value: 'custom', label: 'Custom Prompt' },
     ];
 
@@ -597,9 +607,10 @@ function GenerateTab() {
                         onChange={(e) => setDocType(e.target.value)}
                         className="w-full max-w-xs px-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] text-sm text-foreground
                        focus:outline-none focus:ring-1 focus:ring-foreground/10"
+                        style={{ colorScheme: 'dark' }}
                     >
                         {DOC_TYPES.map((t) => (
-                            <option key={t.value} value={t.value}>{t.label}</option>
+                            <option key={t.value} value={t.value} className="bg-background text-foreground">{t.label}</option>
                         ))}
                     </select>
                 </div>
@@ -735,9 +746,10 @@ function InvitesTab() {
                             onChange={(e) => setDocId(e.target.value)}
                             className="w-full px-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] text-sm text-foreground
                          focus:outline-none focus:ring-1 focus:ring-foreground/10"
+                            style={{ colorScheme: 'dark' }}
                         >
                             {documents.map((d: any) => (
-                                <option key={d.id} value={d.id}>{d.title}</option>
+                                <option key={d.id} value={d.id} className="bg-background text-foreground">{d.title}</option>
                             ))}
                         </select>
                     </div>
