@@ -41,7 +41,7 @@ export async function GET(
 
     // 2. Public-tier documents (NDA) are accessible without auth
     if (doc.tier === 'public') {
-        const content = doc.content || readFromDisk(doc.file_path);
+        const content = doc.content || resolveContent(doc.file_path, slug);
         return NextResponse.json({ content, title: doc.title });
     }
 
@@ -52,13 +52,16 @@ export async function GET(
     }
 
     // 4. Check admin bypass — admins see everything
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
+    const isEmailAdmin = adminEmails.includes(user.email?.toLowerCase() || '');
+
     const { data: userRole } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .single();
 
-    const isAdmin = userRole?.role === 'admin';
+    const isAdmin = isEmailAdmin || userRole?.role === 'admin';
 
     if (!isAdmin) {
         // 5. Check approved access for non-admin users
@@ -76,7 +79,7 @@ export async function GET(
     }
 
     // 6. Serve content — prefer DB content, fallback to disk
-    const content = doc.content || readFromDisk(doc.file_path);
+    const content = doc.content || resolveContent(doc.file_path, slug);
     if (!content) {
         return NextResponse.json({ error: 'Content not available' }, { status: 404 });
     }
@@ -84,10 +87,52 @@ export async function GET(
     return NextResponse.json({ content, title: doc.title });
 }
 
-/** Fallback: read markdown from local docs/ directory */
-function readFromDisk(filePath: string): string | null {
+/**
+ * Resolve content from disk using multiple strategies:
+ * 1. Exact file_path from DB
+ * 2. Slug-based fuzzy match against docs/ directory
+ */
+function resolveContent(filePath: string | null, slug: string): string | null {
+    const docsDir = path.join(process.cwd(), 'docs');
+
+    // Strategy 1: exact file path from DB
+    if (filePath) {
+        const exact = readFile(path.join(docsDir, filePath));
+        if (exact) return exact;
+    }
+
+    // Strategy 2: slug-based fuzzy match
+    // Convert slug like "master-plan" to keywords ["master", "plan"]
+    const keywords = slug.toLowerCase().split('-').filter(k => k.length > 2);
+
     try {
-        const fullPath = path.join(process.cwd(), 'docs', filePath);
+        const files = fs.readdirSync(docsDir).filter(f => f.endsWith('.md'));
+
+        // Score each file by how many slug keywords appear in its name
+        let bestFile: string | null = null;
+        let bestScore = 0;
+
+        for (const file of files) {
+            const lower = file.toLowerCase();
+            const score = keywords.reduce((s, kw) => s + (lower.includes(kw) ? 1 : 0), 0);
+            if (score > bestScore) {
+                bestScore = score;
+                bestFile = file;
+            }
+        }
+
+        if (bestFile && bestScore >= Math.max(1, keywords.length * 0.5)) {
+            return readFile(path.join(docsDir, bestFile));
+        }
+    } catch {
+        // docs directory may not exist
+    }
+
+    return null;
+}
+
+function readFile(fullPath: string): string | null {
+    try {
         return fs.readFileSync(fullPath, 'utf-8');
     } catch {
         return null;
