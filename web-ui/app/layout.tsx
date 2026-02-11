@@ -28,14 +28,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://docs.ivisit.ng'),
   title: 'iVisit Data Room | Secure Intelligence Portal',
   description: 'Access confidential business proposals, technical blueprints, and strategic documents from the iVisit Intelligence Collective.',
-  icons: {
-    icon: [
-      { url: '/logo.png', type: 'image/png' },
-      { url: '/logo.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/logo.png',
-    shortcut: '/logo.svg',
-  },
   openGraph: {
     title: 'iVisit Data Room',
     description: 'Secure document portal for investors, partners, and developers.',
