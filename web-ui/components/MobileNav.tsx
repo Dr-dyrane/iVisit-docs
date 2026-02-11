@@ -8,8 +8,12 @@ import { useDocuments } from '@/hooks/useDocuments';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import {
     Shield, FileText, Briefcase, Map, Printer,
-    Home, LogOut, X, Menu
+    Home, LogOut, X, Menu, Settings
 } from 'lucide-react';
+import { NotificationBell } from '@/components/NotificationBell';
+import { ThemeToggle } from '@/components/ThemeToggle';
+
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
 
 const ICON_MAP: Record<string, React.ElementType> = {
     'briefcase': Briefcase,
@@ -67,7 +71,7 @@ export function MobileNav() {
                                 if (info.offset.y > 100) setIsOpen(false);
                             }}
                             className="bottom-sheet fixed bottom-0 left-0 right-0 z-50
-                         max-h-[85vh] overflow-y-auto"
+                         max-h-[85vh] overflow-y-auto bg-background text-foreground border-t border-foreground/5 shadow-2xl rounded-t-2xl"
                         >
                             {/* Drag handle */}
                             <div className="flex justify-center pt-3 pb-2">
@@ -152,6 +156,36 @@ export function MobileNav() {
                                     );
                                 })}
                             </nav>
+
+                            {/* Admin Link */}
+                            {user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()) && (
+                                <div className="px-4 pb-4">
+                                    <div className="h-px bg-foreground/[0.04] mx-4 my-2" />
+                                    <Link href="/admin" onClick={() => setIsOpen(false)}>
+                                        <div
+                                            className={`flex items-center gap-4 px-4 py-4 rounded-2xl
+                                            transition-all duration-base ease-glide
+                                            ${pathname === '/admin'
+                                                    ? 'bg-red-500/10'
+                                                    : 'hover:bg-foreground/[0.03]'
+                                                }`}
+                                        >
+                                            <Settings className={`w-5 h-5 ${pathname === '/admin' ? 'text-red-400' : 'text-foreground/30'}`} />
+                                            <span className={`text-base ${pathname === '/admin' ? 'text-red-400 font-medium' : 'text-foreground/50'
+                                                }`}>
+                                                Admin Dashboard
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </div>
+                            )}
+
+                            {/* Utilities */}
+                            <div className="px-8 pb-4 flex items-center gap-6">
+                                <NotificationBell />
+                                <div className="h-6 w-px bg-foreground/10" />
+                                <ThemeToggle collapsed={false} />
+                            </div>
 
                             {/* User section */}
                             <div className="px-4 pb-8">
