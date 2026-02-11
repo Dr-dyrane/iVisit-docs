@@ -133,7 +133,7 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                                         ease: [0.23, 1, 0.32, 1],
                                     }}
                                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl
-                              transition-all duration-base ease-glide cursor-pointer
+                              transition-all duration-base ease-glide cursor-pointer mt-2
                               ${isActive
                                             ? 'bg-foreground/[0.06] shadow-lg'
                                             : 'hover:bg-foreground/[0.04]'
@@ -201,7 +201,7 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
             {/* User Profile — flex-wrap so signout goes below on collapse */}
             <div className="px-3 mt-3">
                 <div className="h-px bg-foreground/[0.04] mx-2 mb-3" />
-                <div className={`flex flex-wrap items-center gap-3 px-3 py-2 ${collapsed ? 'justify-center' : ''}`}>
+                <div className={`flex flex-wrap items-center gap-3 py-2 ${collapsed ? 'justify-center' : 'px-3'}`}>
                     {user?.user_metadata?.avatar_url ? (
                         <img
                             src={user.user_metadata.avatar_url}

@@ -8,7 +8,7 @@ import { useDocuments } from '@/hooks/useDocuments';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import {
     Shield, FileText, Briefcase, Map, Printer,
-    Home, LogOut, X, Menu, Settings
+    Home, LogOut, X, Settings, PanelBottomOpen, PanelBottomClose
 } from 'lucide-react';
 import { NotificationBell } from '@/components/NotificationBell';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -33,7 +33,7 @@ export function MobileNav() {
         <>
             {/* Floating action button */}
             <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => setIsOpen(!isOpen)}
                 className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full
                    bg-foreground/[0.06] backdrop-blur-sm shadow-lg
                    flex items-center justify-center
@@ -41,7 +41,11 @@ export function MobileNav() {
                    hover:bg-foreground/[0.1] hover:scale-105
                    active:scale-95"
             >
-                <Menu className="w-5 h-5 text-foreground/60" />
+                {isOpen ? (
+                    <PanelBottomClose className="w-6 h-6 text-foreground/80" />
+                ) : (
+                    <PanelBottomOpen className="w-6 h-6 text-foreground/80" />
+                )}
             </button>
 
             {/* Bottom sheet overlay */}
