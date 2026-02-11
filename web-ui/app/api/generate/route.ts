@@ -11,17 +11,36 @@ const GITHUB_REPOS = [
 ];
 
 // ─── Document type prompts ────────────────────────────────────
+// ─── Document type prompts ────────────────────────────────────
 const DOC_TYPE_PROMPTS: Record<string, string> = {
   business_proposal:
     'Generate a comprehensive business proposal for iVisit. Include executive summary, market opportunity, product overview (covering all platform components), competitive advantages, revenue model, and growth strategy.',
-  privacy_policy:
-    'Generate a thorough privacy policy for the iVisit platform. Cover data collection, storage, usage, sharing, user rights, cookies, third-party integrations, and compliance with NDPR (Nigeria Data Protection Regulation) and GDPR.',
-  technical_spec:
-    'Generate a detailed technical specification document for the iVisit platform. Cover system architecture (Unity Architecture), technology stack, database design, API design, security model, deployment strategy, and performance considerations.',
-  legal_agreement:
-    'Generate a terms of service / user agreement for the iVisit platform. Cover service description, user obligations, intellectual property, liability limitations, dispute resolution, and governing law (Nigerian law).',
+  investor_deck:
+    'Generate a compelling investor pitch deck content for iVisit. Cover problem, solution (Unity Architecture), market size (TAM/SAM/SOM), business model, competitive landscape, roadmap, and financial projections.',
   master_plan:
     'Generate a strategic master plan for iVisit. Cover the vision, phased rollout (0–6 months, 6–18 months, 18–36 months), key milestones, resource requirements, partnerships, and success metrics.',
+  prd:
+    'Generate a comprehensive Product Requirements Document (PRD) for iVisit. Define user personas, user stories, functional requirements, non-functional requirements, UI/UX guidelines, and acceptance criteria.',
+  technical_spec:
+    'Generate a detailed technical specification document for the iVisit platform. Cover system architecture (Unity Architecture), technology stack, database design, API design, security model, deployment strategy, and performance considerations.',
+  api_documentation:
+    'Generate detailed API documentation for iVisit. Include authentication methods, endpoint definitions, request/response examples, limits, and error codes.',
+  system_architecture:
+    'Generate a system architecture document for iVisit. Describe the Unity Architecture, microservices, data flow, database schema, security layers, and deployment pipeline.',
+  privacy_policy:
+    'Generate a thorough privacy policy for the iVisit platform. Cover data collection, storage, usage, sharing, user rights, cookies, third-party integrations, and compliance with NDPR (Nigeria Data Protection Regulation) and GDPR.',
+  terms_of_service:
+    'Generate a terms of service / user agreement for the iVisit platform. Cover service description, user obligations, intellectual property, liability limitations, dispute resolution, and governing law (Nigerian law).',
+  legal_agreement:
+    'Generate a standard legal agreement for iVisit. Cover terms, conditions, mutual obligations, and jurisdiction.',
+  nda:
+    'Generate a Mutual Non-Disclosure Agreement (NDA) for iVisit, compliant with Nigerian law. Protect intellectual property, trade secrets, and confidential information.',
+  sla:
+    'Generate a Service Level Agreement (SLA) for iVisit enterprise clients. Define uptime guarantees, support response times, credits, and penalties for downtime.',
+  compliance_report:
+    'Generate a compliance report for iVisit. Address NDPR/GDPR requirements, data sovereignty, security audits, and regulatory adherence.',
+  user_guide:
+    'Generate a user guide for the iVisit platform. Explain how to use the web console, mobile app, and admin dashboard features with clear step-by-step instructions.',
   custom: '', // Uses customPrompt directly
 };
 
@@ -82,7 +101,15 @@ export async function POST(request: NextRequest) {
     const docType = body.doc_type || 'custom';
     const customPrompt = body.custom_prompt || body.prompt || '';
 
-    const basePrompt = DOC_TYPE_PROMPTS[docType] || '';
+    // 1. Try to get a specific prompt template
+    let basePrompt = DOC_TYPE_PROMPTS[docType];
+
+    // 2. If no template exists, create a generic one from the docType
+    if (!basePrompt && docType !== 'custom') {
+      const humanName = docType.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+      basePrompt = `Generate a professional ${humanName} for the iVisit platform.`;
+    }
+
     const userPrompt = basePrompt
       ? `${basePrompt}\n\nAdditional instructions: ${customPrompt || 'None'}`
       : customPrompt;
