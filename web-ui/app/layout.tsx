@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   title: 'iVisit Data Room | Secure Intelligence Portal',
   description: 'Access confidential business proposals, technical blueprints, and strategic documents from the iVisit Intelligence Collective.',
   icons: {
-    icon: '/logo.svg',
-    apple: '/logo.svg',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
   openGraph: {
     title: 'iVisit Data Room',
