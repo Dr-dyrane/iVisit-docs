@@ -23,8 +23,8 @@ export function AccessGate({ children, documentId, ndaContent }: AccessGateProps
         return (
             <div className="flex items-center justify-center py-40">
                 <div className="text-center">
-                    <Loader2 className="w-6 h-6 text-white/20 animate-spin mx-auto mb-3" />
-                    <p className="text-xs text-white/20 font-mono">Checking access…</p>
+                    <Loader2 className="w-6 h-6 text-foreground/20 animate-spin mx-auto mb-3" />
+                    <p className="text-xs text-foreground/20 font-mono">Checking access…</p>
                 </div>
             </div>
         );
@@ -48,14 +48,14 @@ export function AccessGate({ children, documentId, ndaContent }: AccessGateProps
                     <div className="w-16 h-16 rounded-full bg-yellow-500/[0.06] flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
                         <Clock className="w-7 h-7 text-yellow-400/60" />
                     </div>
-                    <h3 className="text-lg font-heading font-semibold text-white mb-2">
+                    <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                         Awaiting Approval
                     </h3>
-                    <p className="text-sm text-white/35 leading-relaxed mb-3">
+                    <p className="text-sm text-foreground/35 leading-relaxed mb-3">
                         Your NDA has been signed and your access request is pending review.
                         You&apos;ll see the document the moment it&apos;s approved — no refresh needed.
                     </p>
-                    <p className="text-[11px] text-white/15 font-mono">
+                    <p className="text-[11px] text-foreground/15 font-mono">
                         REALTIME · AUTO-UNLOCK ON APPROVAL
                     </p>
                 </div>
@@ -72,13 +72,13 @@ export function AccessGate({ children, documentId, ndaContent }: AccessGateProps
             className="flex items-center justify-center py-40"
         >
             <div className="text-center max-w-sm">
-                <div className="w-16 h-16 rounded-full bg-white/[0.03] flex items-center justify-center mx-auto mb-6">
-                    <Lock className="w-7 h-7 text-white/25" />
+                <div className="w-16 h-16 rounded-full bg-foreground/[0.03] flex items-center justify-center mx-auto mb-6">
+                    <Lock className="w-7 h-7 text-foreground/25" />
                 </div>
-                <h3 className="text-lg font-heading font-semibold text-white mb-2">
+                <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
                     Access Required
                 </h3>
-                <p className="text-sm text-white/35 leading-relaxed mb-8">
+                <p className="text-sm text-foreground/35 leading-relaxed mb-8">
                     Sign the Non-Disclosure Agreement to request access to this document.
                 </p>
                 <button

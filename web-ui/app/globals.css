@@ -8,7 +8,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-  /* ─── Brand Tokens ─── */
+  /* ─── Brand Tokens (Dark — default) ─── */
   --primary: 134 16 30;
   /* Medical Red #861E1E */
   --primary-light: 220 38 38;
@@ -46,6 +46,31 @@
   --radius-md: 20px;
   --radius-lg: 28px;
   --radius-xl: 36px;
+
+  /* ─── Toast ─── */
+  --toast-bg: rgba(255, 255, 255, 0.05);
+  --toast-fg: #f5f5f5;
+}
+
+/* ─── Light Theme Override ─── */
+.light {
+  --background: 232 232 232;
+  /* #E8E8E8 — warm gray, not pure white */
+  --foreground: 23 23 23;
+  /* #171717 */
+  --muted: 120 120 120;
+  --surface: 0 0 0;
+  /* Black (used at low opacity for glass on light bg) */
+
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-bg-hover: rgba(255, 255, 255, 0.65);
+  --glass-bg-active: rgba(255, 255, 255, 0.75);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --glass-shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.1);
+  --glass-glow: 0 0 60px rgba(134, 16, 30, 0.05);
+
+  --toast-bg: rgba(255, 255, 255, 0.7);
+  --toast-fg: #171717;
 }
 
 /* ─── Global Base ─── */
@@ -61,8 +86,8 @@
   }
 
   body {
-    @apply bg-black text-foreground antialiased font-sans;
-    background: #000000;
+    @apply bg-background text-foreground antialiased font-sans;
+    background: rgb(var(--background));
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -70,6 +95,11 @@
   ::selection {
     background: rgba(134, 16, 30, 0.35);
     color: white;
+  }
+
+  .light ::selection {
+    background: rgba(134, 16, 30, 0.15);
+    color: #171717;
   }
 
   /* Scrollbar — Invisible but functional */
@@ -202,11 +232,16 @@
 
   /* ─── Sidebar ─── */
   .sidebar {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: none;
-    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .light .sidebar {
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.05);
   }
 
   /* ─── Bottom Sheet (mobile) ─── */

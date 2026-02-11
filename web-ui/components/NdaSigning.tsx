@@ -115,10 +115,10 @@ export function NdaSigning({
                                 <Shield className="w-5 h-5 text-accent" />
                             </div>
                             <div>
-                                <h2 className="text-lg font-heading font-bold text-white">
+                                <h2 className="text-lg font-heading font-bold text-foreground">
                                     Non-Disclosure Agreement
                                 </h2>
-                                <p className="text-xs text-white/30 font-mono">
+                                <p className="text-xs text-foreground/30 font-mono">
                                     NDA-2026-EXTERNAL · BINDING LEGAL AGREEMENT
                                 </p>
                             </div>
@@ -149,14 +149,14 @@ export function NdaSigning({
                                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                                         className="flex-1 overflow-y-auto px-8 py-6 space-y-6"
                                     >
-                                        <p className="text-sm text-white/50">
+                                        <p className="text-sm text-foreground/50">
                                             By signing below, you acknowledge that you have read and agree to the terms of this Mutual Non-Disclosure Agreement.
                                         </p>
 
                                         {/* Focused input — one at a time feel */}
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="block text-xs text-white/30 font-mono uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-foreground/30 font-mono uppercase tracking-wider mb-2">
                                                     Full Name *
                                                 </label>
                                                 <input
@@ -164,16 +164,16 @@ export function NdaSigning({
                                                     value={signerName}
                                                     onChange={(e) => setSignerName(e.target.value)}
                                                     placeholder="Your legal name"
-                                                    className="w-full px-5 py-4 rounded-2xl bg-white/[0.04] text-white text-sm
-                                     placeholder:text-white/20 outline-none
+                                                    className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.04] text-foreground text-sm
+                                     placeholder:text-foreground/20 outline-none
                                      transition-all duration-base ease-glide
-                                     focus:bg-white/[0.07] focus:shadow-lg"
+                                     focus:bg-foreground/[0.07] focus:shadow-lg"
                                                     autoFocus
                                                 />
                                             </div>
 
                                             <div className="opacity-80">
-                                                <label className="block text-xs text-white/30 font-mono uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-foreground/30 font-mono uppercase tracking-wider mb-2">
                                                     Entity / Organization
                                                 </label>
                                                 <input
@@ -181,15 +181,15 @@ export function NdaSigning({
                                                     value={signerEntity}
                                                     onChange={(e) => setSignerEntity(e.target.value)}
                                                     placeholder="Optional"
-                                                    className="w-full px-5 py-4 rounded-2xl bg-white/[0.04] text-white text-sm
-                                     placeholder:text-white/20 outline-none
+                                                    className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.04] text-foreground text-sm
+                                     placeholder:text-foreground/20 outline-none
                                      transition-all duration-base ease-glide
-                                     focus:bg-white/[0.07] focus:shadow-lg focus:opacity-100"
+                                     focus:bg-foreground/[0.07] focus:shadow-lg focus:opacity-100"
                                                 />
                                             </div>
 
                                             <div className="opacity-80">
-                                                <label className="block text-xs text-white/30 font-mono uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-foreground/30 font-mono uppercase tracking-wider mb-2">
                                                     Title
                                                 </label>
                                                 <input
@@ -197,15 +197,15 @@ export function NdaSigning({
                                                     value={signerTitle}
                                                     onChange={(e) => setSignerTitle(e.target.value)}
                                                     placeholder="Optional"
-                                                    className="w-full px-5 py-4 rounded-2xl bg-white/[0.04] text-white text-sm
-                                     placeholder:text-white/20 outline-none
+                                                    className="w-full px-5 py-4 rounded-2xl bg-foreground/[0.04] text-foreground text-sm
+                                     placeholder:text-foreground/20 outline-none
                                      transition-all duration-base ease-glide
-                                     focus:bg-white/[0.07] focus:shadow-lg focus:opacity-100"
+                                     focus:bg-foreground/[0.07] focus:shadow-lg focus:opacity-100"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="text-xs text-white/20 font-mono">
+                                        <div className="text-xs text-foreground/20 font-mono">
                                             <p>Electronic signature accepted under Nigerian law.</p>
                                             <p>Date: {new Date().toLocaleDateString('en-NG', { dateStyle: 'long' })}</p>
                                         </div>
@@ -216,7 +216,7 @@ export function NdaSigning({
                                 <div className="px-8 py-6 flex items-center justify-between">
                                     <button
                                         onClick={step === 'sign' ? () => setStep('read') : onClose}
-                                        className="text-sm text-white/30 hover:text-white/50 transition-colors duration-base"
+                                        className="text-sm text-foreground/30 hover:text-foreground/50 transition-colors duration-base"
                                     >
                                         {step === 'sign' ? 'Back' : 'Cancel'}
                                     </button>
@@ -227,8 +227,8 @@ export function NdaSigning({
                                             disabled={!hasScrolledToBottom}
                                             className={`btn-glass px-8 py-3 text-sm font-medium
                                   ${hasScrolledToBottom
-                                                    ? 'text-white/90'
-                                                    : 'text-white/20 cursor-not-allowed opacity-50'
+                                                    ? 'text-foreground/90'
+                                                    : 'text-foreground/20 cursor-not-allowed opacity-50'
                                                 }`}
                                         >
                                             {hasScrolledToBottom ? (
@@ -258,8 +258,8 @@ export function NdaSigning({
                         {step === 'submitting' && (
                             <div className="flex-1 flex items-center justify-center py-20">
                                 <div className="text-center">
-                                    <Loader2 className="w-8 h-8 text-white/30 animate-spin mx-auto mb-4" />
-                                    <p className="text-sm text-white/40">Signing agreement…</p>
+                                    <Loader2 className="w-8 h-8 text-foreground/30 animate-spin mx-auto mb-4" />
+                                    <p className="text-sm text-foreground/40">Signing agreement…</p>
                                 </div>
                             </div>
                         )}
@@ -276,8 +276,8 @@ export function NdaSigning({
                                     <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Check className="w-6 h-6 text-green-400" />
                                     </div>
-                                    <p className="text-white font-heading font-semibold mb-1">NDA Signed</p>
-                                    <p className="text-sm text-white/40">Access request submitted for review.</p>
+                                    <p className="text-foreground font-heading font-semibold mb-1">NDA Signed</p>
+                                    <p className="text-sm text-foreground/40">Access request submitted for review.</p>
                                 </div>
                             </motion.div>
                         )}

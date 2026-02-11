@@ -8,8 +8,12 @@ import { useDocuments } from '@/hooks/useDocuments';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Shield, FileText, Briefcase, Map, Printer,
-    LogOut, ChevronLeft, ChevronRight, Home
+    LogOut, ChevronLeft, ChevronRight, Home, Settings
 } from 'lucide-react';
+import { NotificationBell } from '@/components/NotificationBell';
+import { ThemeToggle } from '@/components/ThemeToggle';
+
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
 
 const ICON_MAP: Record<string, React.ElementType> = {
     'briefcase': Briefcase,
@@ -36,7 +40,7 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
             transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             className="sidebar fixed left-0 top-0 h-screen z-40 flex flex-col py-6"
         >
-            {/* Logo */}
+            {/* Logo + Controls */}
             <div className="px-5 mb-8 flex items-center justify-between">
                 <AnimatePresence mode="wait">
                     {!collapsed && (
@@ -50,10 +54,10 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                                 <Shield className="w-4 h-4 text-accent" />
                             </div>
                             <div>
-                                <h2 className="text-sm font-heading font-bold text-white tracking-tight">
-                                    iVisit
+                                <h2 className="text-sm font-heading font-bold text-foreground tracking-tight">
+                                    iVisit<span className="text-accent">.</span>
                                 </h2>
-                                <p className="text-[10px] text-white/30 font-mono tracking-widest uppercase">
+                                <p className="text-[10px] text-foreground/30 font-mono tracking-widest uppercase">
                                     Data Room
                                 </p>
                             </div>
@@ -63,13 +67,13 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
 
                 <button
                     onClick={onToggle}
-                    className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center
-                     transition-all duration-base ease-glide hover:bg-white/[0.08]"
+                    className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center
+                     transition-all duration-base ease-glide hover:bg-foreground/[0.08]"
                 >
                     {collapsed ? (
-                        <ChevronRight className="w-3.5 h-3.5 text-white/40" />
+                        <ChevronRight className="w-3.5 h-3.5 text-foreground/40" />
                     ) : (
-                        <ChevronLeft className="w-3.5 h-3.5 text-white/40" />
+                        <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />
                     )}
                 </button>
             </div>
@@ -82,11 +86,11 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                         className={`flex items-center gap-3 px-3 py-3 rounded-xl
                         transition-all duration-base ease-glide cursor-pointer
                         ${pathname === '/'
-                                ? 'bg-white/[0.06] shadow-lg'
-                                : 'hover:bg-white/[0.04]'
+                                ? 'bg-foreground/[0.06] shadow-lg'
+                                : 'hover:bg-foreground/[0.04]'
                             }`}
                     >
-                        <Home className={`w-[18px] h-[18px] flex-shrink-0 ${pathname === '/' ? 'text-accent' : 'text-white/40'
+                        <Home className={`w-[18px] h-[18px] flex-shrink-0 ${pathname === '/' ? 'text-accent' : 'text-foreground/40'
                             }`} />
                         <AnimatePresence mode="wait">
                             {!collapsed && (
@@ -94,7 +98,7 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                                     initial={{ opacity: 0, x: -8 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -8 }}
-                                    className={`text-sm truncate ${pathname === '/' ? 'text-white font-medium' : 'text-white/50'
+                                    className={`text-sm truncate ${pathname === '/' ? 'text-foreground font-medium' : 'text-foreground/50'
                                         }`}
                                 >
                                     Vault
@@ -105,12 +109,12 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                 </Link>
 
                 {/* Divider */}
-                <div className="h-px bg-white/[0.04] mx-2 my-3" />
+                <div className="h-px bg-foreground/[0.04] mx-2 my-3" />
 
                 {/* Document links */}
-                <div className="space-y-0.5">
+                <div className="space-y-1.5">
                     {!collapsed && (
-                        <p className="text-[10px] text-white/20 font-mono uppercase tracking-widest px-3 mb-2">
+                        <p className="text-[10px] text-foreground/20 font-mono uppercase tracking-widest px-3 mb-2">
                             Documents
                         </p>
                     )}
@@ -131,11 +135,11 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl
                               transition-all duration-base ease-glide cursor-pointer
                               ${isActive
-                                            ? 'bg-white/[0.06] shadow-lg'
-                                            : 'hover:bg-white/[0.04]'
+                                            ? 'bg-foreground/[0.06] shadow-lg'
+                                            : 'hover:bg-foreground/[0.04]'
                                         }`}
                                 >
-                                    <Icon className={`w-[18px] h-[18px] flex-shrink-0 ${isActive ? 'text-accent' : 'text-white/30'
+                                    <Icon className={`w-[18px] h-[18px] flex-shrink-0 ${isActive ? 'text-accent' : 'text-foreground/30'
                                         }`} />
                                     <AnimatePresence mode="wait">
                                         {!collapsed && (
@@ -143,7 +147,7 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                                                 initial={{ opacity: 0, x: -8 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ opacity: 0, x: -8 }}
-                                                className={`text-sm truncate ${isActive ? 'text-white font-medium' : 'text-white/50'
+                                                className={`text-sm truncate ${isActive ? 'text-foreground font-medium' : 'text-foreground/50'
                                                     }`}
                                             >
                                                 {doc.title.replace(/^iVisit\s+/, '').split(':')[0]}
@@ -155,20 +159,57 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                         );
                     })}
                 </div>
+
+                {/* Admin Link */}
+                {user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase()) && (
+                    <>
+                        <div className="h-px bg-foreground/[0.04] mx-2 my-3" />
+                        <Link href="/admin">
+                            <div
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl
+                                transition-all duration-base ease-glide cursor-pointer
+                                ${pathname === '/admin'
+                                        ? 'bg-red-500/10 shadow-lg'
+                                        : 'hover:bg-foreground/[0.04]'
+                                    }`}
+                            >
+                                <Settings className={`w-[18px] h-[18px] flex-shrink-0 ${pathname === '/admin' ? 'text-red-400' : 'text-foreground/30'}`} />
+                                <AnimatePresence mode="wait">
+                                    {!collapsed && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -8 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -8 }}
+                                            className={`text-sm truncate ${pathname === '/admin' ? 'text-red-400 font-medium' : 'text-foreground/50'}`}
+                                        >
+                                            Admin
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </Link>
+                    </>
+                )}
             </div>
 
-            {/* User Profile */}
-            <div className="px-3 mt-4">
-                <div className="h-px bg-white/[0.04] mx-2 mb-4" />
-                <div className="flex items-center gap-3 px-3 py-2">
+            {/* Utility Row — Notification Bell + Theme Toggle */}
+            <div className={`px-3 mt-2 ${collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center gap-2 px-5'}`}>
+                <NotificationBell />
+                <ThemeToggle collapsed={collapsed} />
+            </div>
+
+            {/* User Profile — flex-wrap so signout goes below on collapse */}
+            <div className="px-3 mt-3">
+                <div className="h-px bg-foreground/[0.04] mx-2 mb-3" />
+                <div className={`flex flex-wrap items-center gap-3 px-3 py-2 ${collapsed ? 'justify-center' : ''}`}>
                     {user?.user_metadata?.avatar_url ? (
                         <img
                             src={user.user_metadata.avatar_url}
                             alt=""
-                            className="w-8 h-8 rounded-full bg-white/5"
+                            className="w-8 h-8 rounded-full bg-foreground/5 shrink-0"
                         />
                     ) : (
-                        <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center text-xs font-medium text-white/50">
+                        <div className="w-8 h-8 rounded-full bg-foreground/[0.06] flex items-center justify-center text-xs font-medium text-foreground/50 shrink-0">
                             {user?.email?.[0]?.toUpperCase()}
                         </div>
                     )}
@@ -180,10 +221,10 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                                 exit={{ opacity: 0 }}
                                 className="flex-1 min-w-0"
                             >
-                                <p className="text-sm text-white/70 truncate">
+                                <p className="text-sm text-foreground/70 truncate">
                                     {user?.user_metadata?.full_name || user?.email}
                                 </p>
-                                <p className="text-[10px] text-white/25 font-mono truncate">
+                                <p className="text-[10px] text-foreground/25 font-mono truncate">
                                     {user?.email}
                                 </p>
                             </motion.div>
@@ -191,11 +232,12 @@ export function VaultSidebar({ collapsed, onToggle }: VaultSidebarProps) {
                     </AnimatePresence>
                     <button
                         onClick={signOut}
-                        className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center
-                       hover:bg-white/[0.06] transition-all duration-base ease-glide"
+                        className={`w-8 h-8 rounded-lg bg-foreground/[0.03] flex items-center justify-center
+                       hover:bg-foreground/[0.06] transition-all duration-base ease-glide shrink-0
+                       ${collapsed ? 'mt-1' : ''}`}
                         title="Sign Out"
                     >
-                        <LogOut className="w-3.5 h-3.5 text-white/30" />
+                        <LogOut className="w-3.5 h-3.5 text-foreground/30" />
                     </button>
                 </div>
             </div>

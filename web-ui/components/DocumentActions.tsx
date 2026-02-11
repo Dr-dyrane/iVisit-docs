@@ -10,40 +10,40 @@ import { marked } from 'marked';
 const LOGO_URL = "https://www.ivisit.ng/logo.png";
 
 interface DocumentActionsProps {
-    title: string;
-    tier: string;
-    slug: string;
-    content: string;
+  title: string;
+  tier: string;
+  slug: string;
+  content: string;
 }
 
 export function DocumentActions({ title, tier, slug, content }: DocumentActionsProps) {
-    /**
-     * iframe spool print — mirrors the original generator's handlePrint exactly.
-     * Renders a branded, professional dossier into a hidden iframe and triggers
-     * the native print dialog with full headers, footers, and watermark.
-     */
-    const handlePrint = () => {
-        if (!content) return;
+  /**
+   * iframe spool print — mirrors the original generator's handlePrint exactly.
+   * Renders a branded, professional dossier into a hidden iframe and triggers
+   * the native print dialog with full headers, footers, and watermark.
+   */
+  const handlePrint = () => {
+    if (!content) return;
 
-        const spoolId = 'ivisit-print-spool';
-        let spool = document.getElementById(spoolId) as HTMLIFrameElement;
-        if (spool) spool.remove();
+    const spoolId = 'ivisit-print-spool';
+    let spool = document.getElementById(spoolId) as HTMLIFrameElement;
+    if (spool) spool.remove();
 
-        spool = document.createElement('iframe');
-        spool.id = spoolId;
-        spool.style.position = 'absolute';
-        spool.style.width = '0';
-        spool.style.height = '0';
-        spool.style.border = 'none';
-        spool.style.visibility = 'hidden';
-        document.body.appendChild(spool);
+    spool = document.createElement('iframe');
+    spool.id = spoolId;
+    spool.style.position = 'absolute';
+    spool.style.width = '0';
+    spool.style.height = '0';
+    spool.style.border = 'none';
+    spool.style.visibility = 'hidden';
+    document.body.appendChild(spool);
 
-        const htmlContent = marked.parse(content);
-        const doc = spool.contentWindow?.document;
+    const htmlContent = marked.parse(content);
+    const doc = spool.contentWindow?.document;
 
-        if (doc) {
-            doc.open();
-            doc.write(`
+    if (doc) {
+      doc.open();
+      doc.write(`
         <!DOCTYPE html>
         <html>
           <head>
@@ -186,118 +186,118 @@ export function DocumentActions({ title, tier, slug, content }: DocumentActionsP
           </body>
         </html>
       `);
-            doc.close();
+      doc.close();
 
-            spool.onload = () => {
-                setTimeout(() => {
-                    if (spool.contentWindow) {
-                        spool.contentWindow.focus();
-                        spool.contentWindow.print();
-                    }
-                }, 500);
-            };
-        }
-    };
+      spool.onload = () => {
+        setTimeout(() => {
+          if (spool.contentWindow) {
+            spool.contentWindow.focus();
+            spool.contentWindow.print();
+          }
+        }, 500);
+      };
+    }
+  };
 
-    const handleDownload = () => {
-        if (!content) return;
-        const blob = new Blob([content], { type: 'text/markdown' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${title?.replace(/\s+/g, '_') || 'document'}.md`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast.success('Protocol Exported', {
-            description: 'Secure markdown archive generated',
-        });
-    };
+  const handleDownload = () => {
+    if (!content) return;
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title?.replace(/\s+/g, '_') || 'document'}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success('Protocol Exported', {
+      description: 'Secure markdown archive generated',
+    });
+  };
 
-    const handleCopy = () => {
-        if (!content) return;
-        navigator.clipboard.writeText(content);
-        toast.success('Protocol Copied', {
-            description: 'Content successfully stored in clipboard',
-        });
-    };
+  const handleCopy = () => {
+    if (!content) return;
+    navigator.clipboard.writeText(content);
+    toast.success('Protocol Copied', {
+      description: 'Content successfully stored in clipboard',
+    });
+  };
 
-    const handleShare = async () => {
-        const url = `${window.location.origin}/docs/${slug}`;
-        try {
-            await navigator.clipboard.writeText(url);
-            toast.success('Link copied to clipboard');
-        } catch {
-            toast.error('Failed to copy link');
-        }
-    };
+  const handleShare = async () => {
+    const url = `${window.location.origin}/docs/${slug}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success('Link copied to clipboard');
+    } catch {
+      toast.error('Failed to copy link');
+    }
+  };
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-            className="sticky top-0 z-30 no-print"
-        >
-            <div className="glass rounded-b-glass-lg px-4 sm:px-6 py-4 flex items-center justify-between">
-                {/* Left — back + title */}
-                <div className="flex items-center gap-4">
-                    <Link
-                        href="/"
-                        className="w-9 h-9 rounded-xl bg-white/[0.04] flex items-center justify-center
-                       hover:bg-white/[0.07] transition-all duration-base ease-glide"
-                    >
-                        <ArrowLeft className="w-4 h-4 text-white/40" />
-                    </Link>
-                    <div className="hidden sm:block">
-                        <h2 className="text-sm font-heading font-semibold text-white truncate max-w-[280px]">
-                            {title}
-                        </h2>
-                        <p className="text-[10px] text-white/25 font-mono uppercase tracking-widest">
-                            {tier}
-                        </p>
-                    </div>
-                </div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      className="sticky top-0 z-30 no-print"
+    >
+      <div className="glass rounded-b-glass-lg px-4 sm:px-6 py-4 flex items-center justify-between">
+        {/* Left — back + title */}
+        <div className="flex items-center gap-4">
+          <Link
+            href="/"
+            className="w-9 h-9 rounded-xl bg-foreground/[0.04] flex items-center justify-center
+                       hover:bg-foreground/[0.07] transition-all duration-base ease-glide"
+          >
+            <ArrowLeft className="w-4 h-4 text-foreground/40" />
+          </Link>
+          <div className="hidden sm:block">
+            <h2 className="text-sm font-heading font-semibold text-foreground truncate max-w-[280px]">
+              {title}
+            </h2>
+            <p className="text-[10px] text-foreground/25 font-mono uppercase tracking-widest">
+              {tier}
+            </p>
+          </div>
+        </div>
 
-                {/* Right — actions */}
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={handleCopy}
-                        className="w-9 h-9 rounded-xl bg-white/[0.04] flex items-center justify-center
-                       hover:bg-white/[0.07] transition-all duration-base ease-glide"
-                        title="Copy Content"
-                    >
-                        <Copy className="w-4 h-4 text-white/40" />
-                    </button>
-                    <button
-                        onClick={handleDownload}
-                        className="w-9 h-9 rounded-xl bg-white/[0.04] flex items-center justify-center
-                       hover:bg-white/[0.07] transition-all duration-base ease-glide"
-                        title="Download Markdown"
-                    >
-                        <Download className="w-4 h-4 text-white/40" />
-                    </button>
-                    <button
-                        onClick={handleShare}
-                        className="w-9 h-9 rounded-xl bg-white/[0.04] flex items-center justify-center
-                       hover:bg-white/[0.07] transition-all duration-base ease-glide"
-                        title="Copy Share Link"
-                    >
-                        <Link2 className="w-4 h-4 text-white/40" />
-                    </button>
-                    <button
-                        onClick={handlePrint}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-full
+        {/* Right — actions */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleCopy}
+            className="w-9 h-9 rounded-xl bg-foreground/[0.04] flex items-center justify-center
+                       hover:bg-foreground/[0.07] transition-all duration-base ease-glide"
+            title="Copy Content"
+          >
+            <Copy className="w-4 h-4 text-foreground/40" />
+          </button>
+          <button
+            onClick={handleDownload}
+            className="w-9 h-9 rounded-xl bg-foreground/[0.04] flex items-center justify-center
+                       hover:bg-foreground/[0.07] transition-all duration-base ease-glide"
+            title="Download Markdown"
+          >
+            <Download className="w-4 h-4 text-foreground/40" />
+          </button>
+          <button
+            onClick={handleShare}
+            className="w-9 h-9 rounded-xl bg-foreground/[0.04] flex items-center justify-center
+                       hover:bg-foreground/[0.07] transition-all duration-base ease-glide"
+            title="Copy Share Link"
+          >
+            <Link2 className="w-4 h-4 text-foreground/40" />
+          </button>
+          <button
+            onClick={handlePrint}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full
                        bg-primary text-white text-sm font-bold
                        hover:bg-[#86100E] shadow-xl shadow-primary/20
                        transition-all duration-base ease-glide"
-                    >
-                        <Printer className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Print Dossier</span>
-                    </button>
-                </div>
-            </div>
-        </motion.div>
-    );
+          >
+            <Printer className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Print Dossier</span>
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
 }

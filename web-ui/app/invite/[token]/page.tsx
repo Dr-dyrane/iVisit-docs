@@ -92,7 +92,7 @@ export default function InvitePage() {
     };
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6 relative overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/[0.03] rounded-full blur-[120px]" />
@@ -109,7 +109,7 @@ export default function InvitePage() {
                     {/* Loading */}
                     {state === 'loading' && (
                         <div className="py-8">
-                            <Loader2 className="w-8 h-8 text-white/20 animate-spin mx-auto" />
+                            <Loader2 className="w-8 h-8 text-foreground/20 animate-spin mx-auto" />
                         </div>
                     )}
 
@@ -119,22 +119,22 @@ export default function InvitePage() {
                             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
                                 <Shield className="w-6 h-6 text-accent" />
                             </div>
-                            <h2 className="text-xl font-heading font-bold text-white mb-2">
+                            <h2 className="text-xl font-heading font-bold text-foreground mb-2">
                                 You&apos;ve Been Invited
                             </h2>
-                            <p className="text-sm text-white/40 mb-2">
+                            <p className="text-sm text-foreground/40 mb-2">
                                 Access to:
                             </p>
-                            <p className="text-base font-heading text-white/80 mb-8">
+                            <p className="text-base font-heading text-foreground/80 mb-8">
                                 {document.title}
                             </p>
                             <button
                                 onClick={signInWithGoogle}
                                 className="w-full flex items-center justify-center gap-3 px-6 py-4
-                           rounded-full bg-white/[0.05] backdrop-blur-sm
-                           text-white/90 text-sm font-medium
+                           rounded-full bg-foreground/[0.05] backdrop-blur-sm
+                           text-foreground/90 text-sm font-medium
                            transition-all duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]
-                           hover:bg-white/[0.09] hover:scale-[1.02]
+                           hover:bg-foreground/[0.09] hover:scale-[1.02]
                            active:scale-[0.98]"
                             >
                                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -154,10 +154,10 @@ export default function InvitePage() {
                             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
                                 <Shield className="w-6 h-6 text-accent" />
                             </div>
-                            <h2 className="text-xl font-heading font-bold text-white mb-2">
+                            <h2 className="text-xl font-heading font-bold text-foreground mb-2">
                                 Sign NDA to Continue
                             </h2>
-                            <p className="text-sm text-white/40 mb-8">
+                            <p className="text-sm text-foreground/40 mb-8">
                                 To access &quot;{document.title}&quot;, you must sign our Non-Disclosure Agreement.
                             </p>
                             <button
@@ -172,8 +172,8 @@ export default function InvitePage() {
                     {/* Claiming */}
                     {state === 'claiming' && (
                         <div className="py-8">
-                            <Loader2 className="w-8 h-8 text-white/20 animate-spin mx-auto mb-4" />
-                            <p className="text-sm text-white/40">Claiming your access…</p>
+                            <Loader2 className="w-8 h-8 text-foreground/20 animate-spin mx-auto mb-4" />
+                            <p className="text-sm text-foreground/40">Claiming your access…</p>
                         </div>
                     )}
 
@@ -187,8 +187,8 @@ export default function InvitePage() {
                             <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
                                 <Check className="w-6 h-6 text-green-400" />
                             </div>
-                            <p className="text-white font-heading font-semibold mb-1">Access Granted</p>
-                            <p className="text-sm text-white/40">Redirecting to document…</p>
+                            <p className="text-foreground font-heading font-semibold mb-1">Access Granted</p>
+                            <p className="text-sm text-foreground/40">Redirecting to document…</p>
                         </motion.div>
                     )}
 
@@ -196,17 +196,17 @@ export default function InvitePage() {
                     {state === 'error' && (
                         <div className="py-8">
                             <AlertCircle className="w-8 h-8 text-accent mx-auto mb-4" />
-                            <p className="text-white font-heading font-semibold mb-2">Invalid Invite</p>
-                            <p className="text-sm text-white/40">This invite link is invalid or has expired.</p>
+                            <p className="text-foreground font-heading font-semibold mb-2">Invalid Invite</p>
+                            <p className="text-sm text-foreground/40">This invite link is invalid or has expired.</p>
                         </div>
                     )}
 
                     {/* Expired */}
                     {state === 'expired' && (
                         <div className="py-8">
-                            <AlertCircle className="w-8 h-8 text-white/30 mx-auto mb-4" />
-                            <p className="text-white font-heading font-semibold mb-2">Invite Expired</p>
-                            <p className="text-sm text-white/40">This invite has already been claimed or has expired.</p>
+                            <AlertCircle className="w-8 h-8 text-foreground/30 mx-auto mb-4" />
+                            <p className="text-foreground font-heading font-semibold mb-2">Invite Expired</p>
+                            <p className="text-sm text-foreground/40">This invite has already been claimed or has expired.</p>
                         </div>
                     )}
                 </div>

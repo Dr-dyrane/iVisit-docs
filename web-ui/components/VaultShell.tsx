@@ -10,6 +10,7 @@ import { MobileNav } from '@/components/MobileNav';
 /**
  * VaultShell — wraps all vault pages with auth gate, sidebar, and mobile nav.
  * The generator page at /generator bypasses this shell entirely.
+ * NotificationBell is now inside the sidebar, not floating on top of content.
  */
 export function VaultShell({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth();
@@ -24,10 +25,10 @@ export function VaultShell({ children }: { children: React.ReactNode }) {
     // Loading state — calm acknowledgment
     if (loading) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4 animate-fade-in">
-                    <div className="w-10 h-10 rounded-full bg-white/5 animate-pulse-glow" />
-                    <p className="text-sm text-white/30 font-mono tracking-wider">
+                    <div className="w-10 h-10 rounded-full bg-foreground/5 animate-pulse-glow" />
+                    <p className="text-sm text-foreground/30 font-mono tracking-wider">
                         INITIALIZING VAULT
                     </p>
                 </div>
@@ -41,7 +42,7 @@ export function VaultShell({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen bg-black flex">
+        <div className="min-h-screen bg-background flex">
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block">
                 <VaultSidebar

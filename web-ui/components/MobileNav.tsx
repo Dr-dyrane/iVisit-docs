@@ -31,13 +31,13 @@ export function MobileNav() {
             <button
                 onClick={() => setIsOpen(true)}
                 className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full
-                   bg-white/[0.06] backdrop-blur-sm shadow-lg
+                   bg-foreground/[0.06] backdrop-blur-sm shadow-lg
                    flex items-center justify-center
                    transition-all duration-base ease-glide
-                   hover:bg-white/[0.1] hover:scale-105
+                   hover:bg-foreground/[0.1] hover:scale-105
                    active:scale-95"
             >
-                <Menu className="w-5 h-5 text-white/60" />
+                <Menu className="w-5 h-5 text-foreground/60" />
             </button>
 
             {/* Bottom sheet overlay */}
@@ -71,7 +71,7 @@ export function MobileNav() {
                         >
                             {/* Drag handle */}
                             <div className="flex justify-center pt-3 pb-2">
-                                <div className="w-10 h-1 rounded-full bg-white/10" />
+                                <div className="w-10 h-1 rounded-full bg-foreground/10" />
                             </div>
 
                             {/* Header */}
@@ -81,16 +81,16 @@ export function MobileNav() {
                                         <Shield className="w-4 h-4 text-accent" />
                                     </div>
                                     <div>
-                                        <h2 className="text-sm font-heading font-bold text-white">
+                                        <h2 className="text-sm font-heading font-bold text-foreground">
                                             iVisit Data Room
                                         </h2>
                                     </div>
                                 </div>
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center"
+                                    className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center"
                                 >
-                                    <X className="w-4 h-4 text-white/40" />
+                                    <X className="w-4 h-4 text-foreground/40" />
                                 </button>
                             </div>
 
@@ -101,20 +101,20 @@ export function MobileNav() {
                                         className={`flex items-center gap-4 px-4 py-4 rounded-2xl
                                 transition-all duration-base ease-glide
                                 ${pathname === '/'
-                                                ? 'bg-white/[0.06]'
-                                                : 'hover:bg-white/[0.03]'
+                                                ? 'bg-foreground/[0.06]'
+                                                : 'hover:bg-foreground/[0.03]'
                                             }`}
                                     >
-                                        <Home className={`w-5 h-5 ${pathname === '/' ? 'text-accent' : 'text-white/30'
+                                        <Home className={`w-5 h-5 ${pathname === '/' ? 'text-accent' : 'text-foreground/30'
                                             }`} />
-                                        <span className={`text-base ${pathname === '/' ? 'text-white font-medium' : 'text-white/50'
+                                        <span className={`text-base ${pathname === '/' ? 'text-foreground font-medium' : 'text-foreground/50'
                                             }`}>
                                             Vault
                                         </span>
                                     </div>
                                 </Link>
 
-                                <div className="h-px bg-white/[0.04] mx-4 my-2" />
+                                <div className="h-px bg-foreground/[0.04] mx-4 my-2" />
 
                                 {documents.map((doc, index) => {
                                     const Icon = ICON_MAP[doc.icon] || FileText;
@@ -137,13 +137,13 @@ export function MobileNav() {
                                                 className={`flex items-center gap-4 px-4 py-4 rounded-2xl
                                     transition-all duration-base ease-glide
                                     ${isActive
-                                                        ? 'bg-white/[0.06]'
-                                                        : 'hover:bg-white/[0.03]'
+                                                        ? 'bg-foreground/[0.06]'
+                                                        : 'hover:bg-foreground/[0.03]'
                                                     }`}
                                             >
-                                                <Icon className={`w-5 h-5 ${isActive ? 'text-accent' : 'text-white/30'
+                                                <Icon className={`w-5 h-5 ${isActive ? 'text-accent' : 'text-foreground/30'
                                                     }`} />
-                                                <span className={`text-base ${isActive ? 'text-white font-medium' : 'text-white/50'
+                                                <span className={`text-base ${isActive ? 'text-foreground font-medium' : 'text-foreground/50'
                                                     }`}>
                                                     {doc.title.replace(/^iVisit\s+/, '').split(':')[0]}
                                                 </span>
@@ -155,29 +155,29 @@ export function MobileNav() {
 
                             {/* User section */}
                             <div className="px-4 pb-8">
-                                <div className="h-px bg-white/[0.04] mx-4 mb-4" />
+                                <div className="h-px bg-foreground/[0.04] mx-4 mb-4" />
                                 <div className="flex items-center gap-3 px-4 py-3">
                                     {user?.user_metadata?.avatar_url ? (
                                         <img
                                             src={user.user_metadata.avatar_url}
                                             alt=""
-                                            className="w-10 h-10 rounded-full bg-white/5"
+                                            className="w-10 h-10 rounded-full bg-foreground/5"
                                         />
                                     ) : (
-                                        <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center text-sm text-white/50">
+                                        <div className="w-10 h-10 rounded-full bg-foreground/[0.06] flex items-center justify-center text-sm text-foreground/50">
                                             {user?.email?.[0]?.toUpperCase()}
                                         </div>
                                     )}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm text-white/70 truncate">
+                                        <p className="text-sm text-foreground/70 truncate">
                                             {user?.user_metadata?.full_name || user?.email}
                                         </p>
                                     </div>
                                     <button
                                         onClick={() => { signOut(); setIsOpen(false); }}
-                                        className="w-10 h-10 rounded-xl bg-white/[0.04] flex items-center justify-center"
+                                        className="w-10 h-10 rounded-xl bg-foreground/[0.04] flex items-center justify-center"
                                     >
-                                        <LogOut className="w-4 h-4 text-white/30" />
+                                        <LogOut className="w-4 h-4 text-foreground/30" />
                                     </button>
                                 </div>
                             </div>

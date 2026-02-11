@@ -26,16 +26,16 @@ export function AuthOverlay() {
                 <div className="glass rounded-glass-xl p-10 text-center">
                     {/* Logo area */}
                     <div className="flex justify-center mb-8">
-                        <div className="w-16 h-16 rounded-full bg-white/[0.04] flex items-center justify-center animate-pulse-glow">
-                            <Shield className="w-7 h-7 text-white/60" />
+                        <div className="w-16 h-16 rounded-full bg-foreground/[0.04] flex items-center justify-center animate-pulse-glow">
+                            <Shield className="w-7 h-7 text-foreground/60" />
                         </div>
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-2xl font-heading font-bold text-white tracking-tight mb-2">
+                    <h1 className="text-2xl font-heading font-bold text-foreground tracking-tight mb-2">
                         iVisit Data Room
                     </h1>
-                    <p className="text-sm text-white/40 mb-10 leading-relaxed max-w-xs mx-auto">
+                    <p className="text-sm text-foreground/40 mb-10 leading-relaxed max-w-xs mx-auto">
                         Secure access to confidential intelligence, proposals, and technical blueprints.
                     </p>
 
@@ -43,10 +43,10 @@ export function AuthOverlay() {
                     <button
                         onClick={signInWithGoogle}
                         className="w-full flex items-center justify-center gap-3 px-6 py-4
-                       rounded-full bg-white/[0.05] backdrop-blur-sm
-                       text-white/90 text-sm font-medium
+                       rounded-full bg-foreground/[0.05] backdrop-blur-sm
+                       text-foreground/90 text-sm font-medium
                        transition-all duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]
-                       hover:bg-white/[0.09] hover:scale-[1.02]
+                       hover:bg-foreground/[0.09] hover:scale-[1.02]
                        active:scale-[0.98]
                        focus-visible:ring-2 focus-visible:ring-primary/40"
                     >
@@ -73,7 +73,7 @@ export function AuthOverlay() {
                     </button>
 
                     {/* Footer */}
-                    <p className="text-[11px] text-white/20 mt-8 font-mono tracking-wide">
+                    <p className="text-[11px] text-foreground/20 mt-8 font-mono tracking-wide">
                         PROTECTED BY NDA · NIGERIAN LAW COMPLIANT
                     </p>
                 </div>

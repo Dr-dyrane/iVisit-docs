@@ -123,7 +123,7 @@ export default function DocumentPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center py-40">
-                <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
+                <Loader2 className="w-6 h-6 text-foreground/20 animate-spin" />
             </div>
         );
     }
@@ -132,8 +132,8 @@ export default function DocumentPage() {
         return (
             <div className="flex items-center justify-center py-40">
                 <div className="text-center">
-                    <p className="text-lg font-heading text-white/60">Document not found</p>
-                    <p className="text-sm text-white/25 mt-2 font-mono">Slug: {slug}</p>
+                    <p className="text-lg font-heading text-foreground/60">Document not found</p>
+                    <p className="text-sm text-foreground/25 mt-2 font-mono">Slug: {slug}</p>
                 </div>
             </div>
         );
@@ -151,7 +151,7 @@ export default function DocumentPage() {
                         <DocumentViewer content={content} title={doc.title} tier={doc.tier} />
                     ) : (
                         <div className="flex items-center justify-center py-20">
-                            <Loader2 className="w-5 h-5 text-white/20 animate-spin" />
+                            <Loader2 className="w-5 h-5 text-foreground/20 animate-spin" />
                         </div>
                     )}
                 </AccessGate>

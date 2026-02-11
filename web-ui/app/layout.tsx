@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/hooks/useAuth';
 import { VaultShell } from '@/components/VaultShell';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,6 +25,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://docs.ivisit.ng'),
   title: 'iVisit Data Room — Secure Intelligence Portal',
   description: 'Access confidential business proposals, technical blueprints, and strategic documents from the iVisit Intelligence Collective.',
   icons: {
@@ -46,27 +48,30 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-screen bg-black text-foreground antialiased font-sans">
-        <AuthProvider>
-          <Toaster
-            position="top-right"
-            expand={true}
-            richColors
-            closeButton
-            toastOptions={{
-              style: {
-                background: 'rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(12px)',
-                border: 'none',
-                color: '#f5f5f5',
-              },
-            }}
-          />
-          <VaultShell>
-            {children}
-          </VaultShell>
-        </AuthProvider>
+      <body className="min-h-screen bg-background text-foreground antialiased font-sans transition-colors duration-base">
+        <ThemeProvider>
+          <AuthProvider>
+            <Toaster
+              position="top-right"
+              expand={true}
+              richColors
+              closeButton
+              toastOptions={{
+                style: {
+                  background: 'var(--toast-bg)',
+                  backdropFilter: 'blur(12px)',
+                  border: 'none',
+                  color: 'var(--toast-fg)',
+                },
+              }}
+            />
+            <VaultShell>
+              {children}
+            </VaultShell>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -89,14 +89,14 @@ export default function VaultPage() {
             >
                 <div className="flex items-center gap-3 mb-4">
                     <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                    <span className="text-xs text-white/30 font-mono uppercase tracking-[0.2em]">
+                    <span className="text-xs text-foreground/30 font-mono uppercase tracking-[0.2em]">
                         Secure Intelligence Portal
                     </span>
                 </div>
-                <h1 className="text-4xl lg:text-5xl font-heading font-bold text-white tracking-tight leading-[1.1] mb-4">
+                <h1 className="text-4xl lg:text-5xl font-heading font-bold text-foreground tracking-tight leading-[1.1] mb-4">
                     The Vault
                 </h1>
-                <p className="text-base text-white/35 max-w-lg leading-relaxed">
+                <p className="text-base text-foreground/35 max-w-lg leading-relaxed">
                     Confidential documents, strategic proposals, and technical blueprints.
                     Sign the NDA to request access.
                 </p>
@@ -139,9 +139,9 @@ export default function VaultPage() {
 
                                     {/* Top row: icon + badges */}
                                     <div className="flex items-start justify-between mb-5">
-                                        <div className="w-11 h-11 rounded-2xl bg-white/[0.04] flex items-center justify-center
-                                    group-hover:bg-white/[0.07] transition-all duration-base ease-glide">
-                                            <Icon className="w-5 h-5 text-white/40 group-hover:text-white/60 transition-colors" />
+                                        <div className="w-11 h-11 rounded-2xl bg-foreground/[0.04] flex items-center justify-center
+                                    group-hover:bg-foreground/[0.07] transition-all duration-base ease-glide">
+                                            <Icon className="w-5 h-5 text-foreground/40 group-hover:text-foreground/60 transition-colors" />
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <span className={`badge ${status.badge}`}>
@@ -155,17 +155,17 @@ export default function VaultPage() {
                                     </div>
 
                                     {/* Title & description */}
-                                    <h3 className="text-base font-heading font-semibold text-white mb-2 tracking-tight
-                                 group-hover:text-white transition-colors">
+                                    <h3 className="text-base font-heading font-semibold text-foreground mb-2 tracking-tight
+                                 group-hover:text-foreground transition-colors">
                                         {doc.title}
                                     </h3>
-                                    <p className="text-sm text-white/30 leading-relaxed line-clamp-2 mb-6">
+                                    <p className="text-sm text-foreground/30 leading-relaxed line-clamp-2 mb-6">
                                         {doc.description}
                                     </p>
 
                                     {/* Action hint */}
-                                    <div className="flex items-center gap-2 text-xs text-white/20
-                                  group-hover:text-white/40 transition-colors">
+                                    <div className="flex items-center gap-2 text-xs text-foreground/20
+                                  group-hover:text-foreground/40 transition-colors">
                                         {doc.accessStatus === 'approved' ? (
                                             <>
                                                 <span>Open Document</span>
@@ -202,7 +202,7 @@ export default function VaultPage() {
                 transition={{ delay: 0.6, duration: 0.5 }}
                 className="mt-20 text-center"
             >
-                <p className="text-[11px] text-white/15 font-mono tracking-wider">
+                <p className="text-[11px] text-foreground/15 font-mono tracking-wider">
                     iVisit Intelligence Collective · {new Date().getFullYear()} · All Rights Reserved
                 </p>
             </motion.div>
