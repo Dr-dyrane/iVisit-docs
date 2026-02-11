@@ -105,9 +105,9 @@ export function NdaSigning({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.98 }}
                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                        className="fixed inset-4 lg:inset-auto lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2
-                       lg:w-[700px] lg:max-h-[85vh] z-50
-                       glass rounded-glass-xl flex flex-col overflow-hidden"
+                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                       w-[95%] max-w-[700px] max-h-[85vh] z-50
+                       glass rounded-glass-xl flex flex-col overflow-hidden shadow-2xl"
                     >
                         {/* Header */}
                         <div className="px-8 pt-8 pb-4 flex items-center gap-4">

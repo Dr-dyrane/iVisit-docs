@@ -18,6 +18,14 @@ export function AccessGate({ children, documentId, ndaContent }: AccessGateProps
     const { status, loading } = useAccessStatus(documentId, user?.id ?? null);
     const [ndaOpen, setNdaOpen] = useState(false);
 
+    // Admin bypass: Admins see everything immediately
+    const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
+    const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+
+    if (isAdmin) {
+        return <>{children}</>;
+    }
+
     // Loading — calm
     if (loading) {
         return (
