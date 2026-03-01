@@ -124,14 +124,13 @@ export async function PUT(request: Request) {
         .from('documents')
         .update(updates)
         .eq('id', id)
-        .select()
-        .single();
+        .select();
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ document: data });
+    return NextResponse.json({ document: data?.[0] || null });
 }
 
 // DELETE — Delete a document

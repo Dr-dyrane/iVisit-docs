@@ -107,12 +107,11 @@ export async function PATCH(request: Request) {
         .from('access_requests')
         .update({ status })
         .eq('id', requestId)
-        .select()
-        .single();
+        .select();
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ request: data });
+    return NextResponse.json({ request: data?.[0] || null });
 }
