@@ -162,7 +162,7 @@ BEGIN
   END IF;
 
   INSERT INTO public.notifications (user_id, type, action_type, target_id, title, message, icon, color)
-  VALUES (NEW.user_id, 'access_request', NEW.status, NEW.id::TEXT, notif_title, notif_message, notif_icon, notif_color);
+  VALUES (NEW.user_id, 'access_request', NEW.status, NEW.id, notif_title, notif_message, notif_icon, notif_color);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -64,6 +64,23 @@ export default function DocumentPage() {
         async function checkAndLoad() {
             if (!doc || !user) return;
 
+            // Admin bypass: admins get content immediately
+            const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase());
+            const isEmailAdmin = adminEmails.includes(user.email?.toLowerCase() || '');
+
+            if (isEmailAdmin) {
+                setAccessApproved(true);
+                try {
+                    const res = await fetch(`/api/documents/${slug}/content`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setContent(data.content);
+                    }
+                } catch { }
+                return;
+            }
+
+            // Non-admin: check for approved access request
             const { data: access } = await supabase
                 .from('access_requests')
                 .select('status')
@@ -73,7 +90,6 @@ export default function DocumentPage() {
 
             if (access?.status === 'approved') {
                 setAccessApproved(true);
-                // Fetch content
                 try {
                     const res = await fetch(`/api/documents/${slug}/content`);
                     if (res.ok) {
@@ -102,7 +118,6 @@ export default function DocumentPage() {
                     const record = payload.new as any;
                     if (record?.document_id === doc.id && record?.status === 'approved') {
                         setAccessApproved(true);
-                        // Fetch content now
                         try {
                             const res = await fetch(`/api/documents/${slug}/content`);
                             if (res.ok) {

@@ -59,7 +59,7 @@ export async function GET(
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
     const isAdmin = isEmailAdmin || userRole?.role === 'admin';
 
